@@ -41,7 +41,7 @@ Divide development into phases:
 - TailwindCSS setup
 - Supabase project and database initialization
 - Authentication flow (sign up, sign in, sign out with magic link + OAuth)
-- Protected routes with middleware
+- Protected routes with proxy
 - Basic landing and dashboard pages
 
 ### Phase 2: Core Todo Features (~4-5 days)

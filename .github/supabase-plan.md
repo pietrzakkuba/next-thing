@@ -5,8 +5,8 @@
 - [x] Supabase packages installed (`@supabase/supabase-js`, `@supabase/ssr`)
 - [x] `src/lib/supabase/client.ts` — browser client
 - [x] `src/lib/supabase/server.ts` — server client
-- [x] `src/lib/supabase/middleware.ts` — session refresh helper
-- [x] `src/middleware.ts` — route protection (guarded until env vars are set)
+- [x] `src/lib/supabase/proxy.ts` — session refresh helper
+- [x] `src/proxy.ts` — route protection (guarded until env vars are set)
 - [x] Jest + React Testing Library configured
 
 ---
@@ -45,7 +45,7 @@ src/app/
       page.tsx          ← first protected page
   auth/
     callback/
-      route.ts          ← exchanges code for session cookie (required for magic link + OAuth)
+      route.ts          ← exchanges code for session cookie (required for magic link)
 ```
 
 ---
