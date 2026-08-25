@@ -13,13 +13,24 @@ type Todo = {
 
 export default function DashboardPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     async function loadTodos() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        return;
+      }
+      setUserId(user.id);
+
       const { data, error } = await supabase
         .from("todos")
         .select("id, title, completed")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -45,7 +56,8 @@ export default function DashboardPage() {
     const { error } = await supabase
       .from("todos")
       .update({ completed: nextCompleted })
-      .eq("id", id);
+      .eq("id", id)
+      .eq("user_id", userId);
 
     if (error) {
       console.error("Failed to update todo:", error);
@@ -58,9 +70,11 @@ export default function DashboardPage() {
   }
 
   async function addTodo(title: string) {
+    if (!userId) return;
+
     const { data, error } = await supabase
       .from("todos")
-      .insert({ title, completed: false })
+      .insert({ title, completed: false, user_id: userId })
       .select("id, title, completed")
       .single();
 
@@ -76,7 +90,11 @@ export default function DashboardPage() {
     const previousTodos = todos;
     setTodos((current) => current.filter((todo) => todo.id !== id));
 
-    const { error } = await supabase.from("todos").delete().eq("id", id);
+    const { error } = await supabase
+      .from("todos")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", userId);
 
     if (error) {
       console.error("Failed to delete todo:", error);
