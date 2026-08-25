@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TodoItem from "@/components/TodoItem";
 import AddTodoForm from "@/components/AddTodoForm";
+import { createClient } from "@/lib/supabase/client";
 
 type Todo = {
   id: string;
@@ -10,32 +11,77 @@ type Todo = {
   completed: boolean;
 };
 
-const initialTodos: Todo[] = [
-  { id: "1", title: "Learn Next.js 16", completed: true },
-  { id: "2", title: "Learn TypeScript", completed: false },
-  { id: "3", title: "Learn Tailwind CSS", completed: false },
-];
-
 export default function DashboardPage() {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const supabase = createClient();
 
-  function toggleTodo(id: string) {
+  useEffect(() => {
+    async function loadTodos() {
+      const { data, error } = await supabase
+        .from("todos")
+        .select("id, title, completed")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to load todos:", error);
+        return;
+      }
+      setTodos(data ?? []);
+    }
+
+    loadTodos();
+  }, [supabase]);
+
+  async function toggleTodo(id: string) {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+
+    const nextCompleted = !todo.completed;
+
     setTodos((current) =>
-      current.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
+      current.map((t) => (t.id === id ? { ...t, completed: nextCompleted } : t))
     );
+
+    const { error } = await supabase
+      .from("todos")
+      .update({ completed: nextCompleted })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Failed to update todo:", error);
+      setTodos((current) =>
+        current.map((t) =>
+          t.id === id ? { ...t, completed: !nextCompleted } : t
+        )
+      );
+    }
   }
 
-  function addTodo(title: string) {
-    setTodos((current) => [
-      { id: crypto.randomUUID(), title, completed: false },
-      ...current,
-    ]);
+  async function addTodo(title: string) {
+    const { data, error } = await supabase
+      .from("todos")
+      .insert({ title, completed: false })
+      .select("id, title, completed")
+      .single();
+
+    if (error) {
+      console.error("Failed to add todo:", error);
+      return;
+    }
+
+    setTodos((current) => [data, ...current]);
   }
 
-  function deleteTodo(id: string) {
+  async function deleteTodo(id: string) {
+    const previousTodos = todos;
     setTodos((current) => current.filter((todo) => todo.id !== id));
+
+    const { error } = await supabase.from("todos").delete().eq("id", id);
+
+    if (error) {
+      console.error("Failed to delete todo:", error);
+      setTodos(previousTodos);
+    }
   }
 
   return (

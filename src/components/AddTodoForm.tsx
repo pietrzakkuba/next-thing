@@ -30,7 +30,11 @@ export default function AddTodoForm({ onAddAction }: AddTodoFormProps) {
       <button
         type="submit"
         disabled={!title.trim()}
-        className="cursor-pointer rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-zinc-950"
+        className={`rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition ${
+          title.trim()
+            ? "cursor-pointer hover:bg-zinc-800"
+            : "cursor-not-allowed opacity-40"
+        }`}
       >
         Add
       </button>
