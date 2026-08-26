@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import TodoItem, { type TodoPriority } from "@/components/TodoItem";
+import TodoItem, {
+  type TodoPriority,
+  type TodoUpdate,
+} from "@/components/TodoItem";
 import AddTodoForm from "@/components/AddTodoForm";
 import { createClient } from "@/lib/supabase/client";
 import type { TodoCategory } from "@/lib/categories";
@@ -102,6 +105,40 @@ export default function DashboardPage() {
     setTodos((current) => [data, ...current]);
   }
 
+  async function editTodo(id: string, update: TodoUpdate) {
+    const previousTodos = todos;
+
+    setTodos((current) =>
+      current.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              title: update.title,
+              due_date: update.dueDate,
+              priority: update.priority,
+              category: update.category,
+            }
+          : t
+      )
+    );
+
+    const { error } = await supabase
+      .from("todos")
+      .update({
+        title: update.title,
+        due_date: update.dueDate,
+        priority: update.priority,
+        category: update.category,
+      })
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Failed to edit todo:", error);
+      setTodos(previousTodos);
+    }
+  }
+
   async function deleteTodo(id: string) {
     const previousTodos = todos;
     setTodos((current) => current.filter((todo) => todo.id !== id));
@@ -134,6 +171,7 @@ export default function DashboardPage() {
               category={todo.category}
               onToggle={() => toggleTodo(todo.id)}
               onDelete={() => deleteTodo(todo.id)}
+              onEdit={(update) => editTodo(todo.id, update)}
             />
           ))}
         </div>
