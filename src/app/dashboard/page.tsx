@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import TodoItem from "@/components/TodoItem";
+import TodoItem, { type TodoPriority } from "@/components/TodoItem";
 import AddTodoForm from "@/components/AddTodoForm";
 import { createClient } from "@/lib/supabase/client";
+import type { TodoCategory } from "@/lib/categories";
 
 type Todo = {
   id: string;
   title: string;
   completed: boolean;
+  due_date: string | null;
+  priority: TodoPriority;
+  category: TodoCategory;
 };
 
 export default function DashboardPage() {
@@ -29,7 +33,7 @@ export default function DashboardPage() {
 
       const { data, error } = await supabase
         .from("todos")
-        .select("id, title, completed")
+        .select("id, title, completed, due_date, priority, category")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -69,13 +73,25 @@ export default function DashboardPage() {
     }
   }
 
-  async function addTodo(title: string) {
+  async function addTodo(
+    title: string,
+    dueDate: string | null,
+    priority: TodoPriority,
+    category: TodoCategory
+  ) {
     if (!userId) return;
 
     const { data, error } = await supabase
       .from("todos")
-      .insert({ title, completed: false, user_id: userId })
-      .select("id, title, completed")
+      .insert({
+        title,
+        completed: false,
+        due_date: dueDate,
+        priority,
+        category,
+        user_id: userId,
+      })
+      .select("id, title, completed, due_date, priority, category")
       .single();
 
     if (error) {
@@ -113,6 +129,9 @@ export default function DashboardPage() {
               key={todo.id}
               title={todo.title}
               completed={todo.completed}
+              dueDate={todo.due_date}
+              priority={todo.priority}
+              category={todo.category}
               onToggle={() => toggleTodo(todo.id)}
               onDelete={() => deleteTodo(todo.id)}
             />
