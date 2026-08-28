@@ -2,18 +2,12 @@ import { useState } from "react";
 import {
   CATEGORY_LABELS,
   CATEGORY_STYLES,
-  TODO_CATEGORIES,
   type TodoCategory,
 } from "@/lib/categories";
+import type { TodoPriority, TodoUpdate } from "@/lib/todos";
+import TodoForm from "./TodoForm";
 
-export type TodoPriority = "low" | "medium" | "high";
-
-export type TodoUpdate = {
-  title: string;
-  dueDate: string | null;
-  priority: TodoPriority;
-  category: TodoCategory;
-};
+export type { TodoPriority, TodoUpdate } from "@/lib/todos";
 
 const PRIORITY_STYLES: Record<TodoPriority, string> = {
   low: "bg-zinc-100 text-zinc-600",
@@ -59,16 +53,8 @@ export default function TodoItem({
   onEdit,
 }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [draftTitle, setDraftTitle] = useState(title);
-  const [draftDueDate, setDraftDueDate] = useState(dueDate ?? "");
-  const [draftPriority, setDraftPriority] = useState<TodoPriority>(priority);
-  const [draftCategory, setDraftCategory] = useState<TodoCategory>(category);
 
   function startEditing() {
-    setDraftTitle(title);
-    setDraftDueDate(dueDate ?? "");
-    setDraftPriority(priority);
-    setDraftCategory(category);
     setIsEditing(true);
   }
 
@@ -76,13 +62,15 @@ export default function TodoItem({
     setIsEditing(false);
   }
 
-  function saveEditing() {
-    const trimmedTitle = draftTitle.trim();
-    if (!trimmedTitle) return;
-
+  function saveEditing(
+    draftTitle: string,
+    draftDueDate: string | null,
+    draftPriority: TodoPriority,
+    draftCategory: TodoCategory
+  ) {
     onEdit({
-      title: trimmedTitle,
-      dueDate: draftDueDate || null,
+      title: draftTitle,
+      dueDate: draftDueDate,
       priority: draftPriority,
       category: draftCategory,
     });
@@ -91,76 +79,22 @@ export default function TodoItem({
 
   if (isEditing) {
     return (
-      <article className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3">
-        <input
-          type="text"
-          value={draftTitle}
-          onChange={(event) => setDraftTitle(event.target.value)}
-          placeholder="Title"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-zinc-950"
-        />
-        <div className="flex flex-wrap gap-2">
-          <input
-            type="date"
-            value={draftDueDate}
-            onChange={(event) => setDraftDueDate(event.target.value)}
-            aria-label="Due date"
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 outline-none transition focus:border-zinc-950"
-          />
-          <select
-            value={draftPriority}
-            onChange={(event) =>
-              setDraftPriority(event.target.value as TodoPriority)
-            }
-            aria-label="Priority"
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 outline-none transition focus:border-zinc-950"
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-          <select
-            value={draftCategory}
-            onChange={(event) =>
-              setDraftCategory(event.target.value as TodoCategory)
-            }
-            aria-label="Category"
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 outline-none transition focus:border-zinc-950"
-          >
-            {TODO_CATEGORIES.map((value) => (
-              <option key={value} value={value}>
-                {CATEGORY_LABELS[value]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={cancelEditing}
-            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={saveEditing}
-            disabled={!draftTitle.trim()}
-            className={`rounded-lg bg-zinc-950 px-3 py-1.5 text-sm font-medium text-white transition ${
-              draftTitle.trim()
-                ? "cursor-pointer hover:bg-zinc-800"
-                : "cursor-not-allowed opacity-40"
-            }`}
-          >
-            Save
-          </button>
-        </div>
-      </article>
+      <TodoForm
+        initialTitle={title}
+        initialDueDate={dueDate}
+        initialPriority={priority}
+        initialCategory={category}
+        titlePlaceholder="Title"
+        submitLabel="Save"
+        onSubmitAction={saveEditing}
+        onCancelAction={cancelEditing}
+        autoFocus
+      />
     );
   }
 
   return (
-    <article className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3">
+    <article className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
       <input
         type="checkbox"
         checked={completed}
