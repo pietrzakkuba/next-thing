@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import TodoItem, {
   type TodoPriority,
   type TodoUpdate,
@@ -22,6 +23,7 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     async function loadTodos() {
@@ -155,9 +157,25 @@ export default function Home() {
     }
   }
 
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+    router.refresh();
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
       <section className="w-full max-w-2xl space-y-4 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="cursor-pointer rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+          >
+            Log out
+          </button>
+        </div>
+
         <AddTodoForm onAddAction={addTodo} />
 
         <div className="space-y-2">

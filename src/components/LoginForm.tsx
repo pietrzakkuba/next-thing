@@ -36,8 +36,8 @@ export default function LoginForm() {
       <section className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-zinc-950">Sign in</h1>
-          <p className="text-sm text-zinc-600">
-            Enter your email and we&apos;ll send you a magic link.
+          <p className="text-sm text-zinc-900">
+            Enter your email.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function LoginForm() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none transition focus:border-zinc-950"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none transition focus:border-zinc-700 text-zinc-900 focus:ring-2 focus:ring-zinc-100 placeholder:text-zinc-400"
               placeholder="you@example.com"
               required
             />
@@ -59,7 +59,7 @@ export default function LoginForm() {
             disabled={isLoading}
             className="flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoading ? "Sending..." : "Send magic link"}
+            {isLoading ? "Sending..." : "Sign Up"}
           </button>
         </form>
 
