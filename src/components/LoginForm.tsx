@@ -3,10 +3,13 @@
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isEmailValid = EMAIL_REGEX.test(email);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +30,7 @@ export default function LoginForm() {
       return;
     }
 
-    setMessage("Check your email for the magic link.");
+    setMessage("Check your email for the link.");
     setIsLoading(false);
   }
 
@@ -56,7 +59,7 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !isEmailValid}
             className="flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? "Sending..." : "Sign Up"}
