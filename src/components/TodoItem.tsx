@@ -94,17 +94,19 @@ export default function TodoItem({
   }
 
   return (
-    <article className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
+    <article className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800">
       <input
         type="checkbox"
         checked={completed}
         onChange={onToggle}
-        className="h-4 w-4 rounded border-zinc-300"
+        className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600"
       />
       <div className="flex flex-1 flex-col gap-1">
         <p
           className={
-            completed ? "text-zinc-400 line-through" : "text-zinc-900"
+            completed
+              ? "text-zinc-400 line-through dark:text-zinc-500"
+              : "text-zinc-900 dark:text-zinc-100"
           }
         >
           {title}
@@ -121,7 +123,9 @@ export default function TodoItem({
             {CATEGORY_LABELS[category]}
           </span>
           {dueDate && (
-            <span className="text-zinc-400">Due {formatDueDate(dueDate)}</span>
+            <span className="text-zinc-400 dark:text-zinc-500">
+              Due {formatDueDate(dueDate)}
+            </span>
           )}
         </div>
       </div>
@@ -129,7 +133,7 @@ export default function TodoItem({
         type="button"
         onClick={startEditing}
         aria-label={`Edit "${title}"`}
-        className="cursor-pointer text-sm text-zinc-400 transition hover:text-zinc-900"
+        className="cursor-pointer text-sm text-zinc-400 transition hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-100"
       >
         Edit
       </button>
@@ -137,7 +141,7 @@ export default function TodoItem({
         type="button"
         onClick={onDelete}
         aria-label={`Delete "${title}"`}
-        className="cursor-pointer text-sm text-zinc-400 transition hover:text-red-600"
+        className="cursor-pointer text-sm text-zinc-400 transition hover:text-red-600 dark:text-zinc-500 dark:hover:text-red-400"
       >
         Delete
       </button>

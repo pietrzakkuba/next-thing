@@ -27,8 +27,8 @@ type TodoFormProps = {
 };
 
 const fieldClasses =
-  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
-const labelClasses = "mb-1 block text-xs font-medium text-zinc-500";
+  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-indigo-400 dark:focus:ring-indigo-950";
+const labelClasses = "mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400";
 
 export default function TodoForm({
   initialTitle = "",
@@ -66,7 +66,7 @@ export default function TodoForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl border border-zinc-200 bg-zinc-50 p-4"
+      className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800"
     >
       <div>
         <label htmlFor="todo-title" className={labelClasses}>
@@ -151,7 +151,7 @@ export default function TodoForm({
           <button
             type="button"
             onClick={onCancelAction}
-            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900"
+            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             Cancel
           </button>
@@ -163,7 +163,7 @@ export default function TodoForm({
           className={`rounded-lg px-4 py-1.5 text-sm font-semibold text-white transition ${
             trimmedTitle
               ? "cursor-pointer bg-indigo-600 hover:bg-indigo-500"
-              : "cursor-not-allowed bg-zinc-300"
+              : "cursor-not-allowed bg-zinc-300 dark:bg-zinc-600"
           }`}
         >
           {submitLabel}

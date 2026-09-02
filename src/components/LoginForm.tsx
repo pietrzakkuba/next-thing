@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,23 +36,30 @@ export default function LoginForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-      <section className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
+      <section className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="mb-4 flex justify-end">
+          <ThemeToggle />
+        </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold text-zinc-950">Sign in</h1>
-          <p className="text-sm text-zinc-900">
+          <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+            Sign in
+          </h1>
+          <p className="text-sm text-zinc-900 dark:text-zinc-300">
             Enter your email.
           </p>
         </div>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <label className="block space-y-2">
-            <span className="text-sm font-medium text-zinc-700">Email</span>
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Email
+            </span>
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none transition focus:border-zinc-700 text-zinc-900 focus:ring-2 focus:ring-zinc-100 placeholder:text-zinc-400"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none transition focus:border-zinc-700 text-zinc-900 focus:ring-2 focus:ring-zinc-100 placeholder:text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-800"
               placeholder="you@example.com"
               required
             />
@@ -60,14 +68,16 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={isLoading || !isEmailValid}
-            className="flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-300"
           >
             {isLoading ? "Sending..." : "Sign Up"}
           </button>
         </form>
 
         {message ? (
-          <p className="mt-4 text-sm text-zinc-700">{message}</p>
+          <p className="mt-4 text-sm text-zinc-700 dark:text-zinc-300">
+            {message}
+          </p>
         ) : null}
       </section>
     </main>
