@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  let response = NextResponse.redirect(new URL("/dashboard", request.url));
+  let response = NextResponse.redirect(new URL("/", request.url));
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
-          response = NextResponse.redirect(new URL("/dashboard", request.url));
+          response = NextResponse.redirect(new URL("/", request.url));
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
           );
